@@ -136,6 +136,6 @@ public class Main {
         var formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         UserModel model = new UserModel();
         var birthday = LocalDate.parse(birthdayString, formatter);
-        return validateInput(0, name, email, birthday);
+        return validateInput(id, name, email, birthday);
     }
 }
