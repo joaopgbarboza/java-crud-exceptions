@@ -1,4 +1,5 @@
 import br.com.dio.dao.UserDAO;
+import br.com.dio.exception.CustomException;
 import br.com.dio.exception.EmptyStorageException;
 import br.com.dio.exception.UserNotFoundException;
 import br.com.dio.exception.ValidatorException;
@@ -35,7 +36,7 @@ public class Main {
                     try{
                         var user = dao.save(requestToSave());
                         System.out.printf("User %s registered!", user);
-                    } catch (ValidatorException ex){
+                    } catch (CustomException ex){
                         ex.printStackTrace();
                     }
                 }
@@ -46,7 +47,7 @@ public class Main {
                         System.out.printf("User %s is updated", user);
                     } catch (UserNotFoundException | EmptyStorageException ex){
                             System.out.println(ex.getMessage());
-                    } catch (ValidatorException ex){
+                    } catch (CustomException ex){
                         System.out.println(ex.getMessage());
                         ex.printStackTrace();
                     }
@@ -112,10 +113,15 @@ public class Main {
     }
 
     private static UserModel validateInput(final long id, final String name,
-                              final String email, final LocalDate birthday) throws ValidatorException{
+                              final String email, final LocalDate birthday){
         var user = new UserModel(0, name, email, birthday);
-        verifyModel(user);
-        return user;
+        try{
+            verifyModel(user);
+            return user;
+        } catch (ValidatorException ex){
+            throw new CustomException("The user contain errors: " + ex.getMessage(), ex);
+        }
+
     }
 
     private static UserModel requestToUpdate() {
